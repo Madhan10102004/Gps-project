@@ -1,0 +1,43 @@
+import cv2
+import gps
+import time
+import socket
+
+# fare calculation 
+def calculate_fare(distance, time, rate):
+    return distance * rate + time * rate * 0.5
+
+class GPS:
+    def __init__(self):
+        self.client = gps.gps(mode=gps.WATCH_ENABLE)
+
+    def get_location(self):
+        report = self.client.next()
+        if report:
+            lat = report.latitude
+            lon = report.longitude
+            return (lat, lon)
+        return None
+
+class SatelliteClient:
+    def send(self, plate_text, speed, fare):
+        # Assume this function sends the data to a satellite
+        # This is a placeholder and does not include actual implementation
+        print(f"Sending data to satellite: Plate={plate_text}, Speed={speed}, Fare=₹{fare}")
+
+class SpeedCameraSystem:
+    def __init__(self, rate):
+        self.gps = GPS()
+        self.prev_location = None
+        self.prev_time = None
+        self.satellite_client = SatelliteClient()
+        self.rate = rate  
+#To calculate distance travelled 
+
+    def calculate_distance(self, current_location, current_time):
+        if self.prev_location and self.prev_time:
+            distance = gps.distance(self.prev_location, current_location)
+            time_diff = current_time - self.prev_time
+            speed = distance / time_diff
+            return distance, time_diff, speed
+        return None
